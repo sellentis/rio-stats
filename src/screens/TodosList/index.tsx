@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import TodoItem from '@/components/TodoItem';
+import {Todo} from '@/interfaces';
+import { colors } from "@/styles";
 
 type Props = {
   navigation: any;
@@ -23,7 +25,7 @@ const TodosList: React.FC<Props> = ({navigation}) => {
     <SafeAreaView>
       <View style={[styles.container]}>
         {todos.length ? (
-          todos.map(item => (
+          todos.map((item: Todo) => (
             <TodoItem
               key={item.id}
               id={item.id}
@@ -43,8 +45,9 @@ const TodosList: React.FC<Props> = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 16,
+    paddingVertical: 16,
+    backgroundColor: colors.mainBg,
     alignItems: 'center',
-    justifyContent: 'center',
     minHeight: Dimensions.get('window').height,
   },
   text: {

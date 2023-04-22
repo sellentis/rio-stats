@@ -1,37 +1,49 @@
 import React, {useState} from 'react';
-import { StyleSheet, TextInput, View, Text, TouchableHighlight } from "react-native";
-import { useDispatch } from "react-redux";
-import { removeTodo } from "@/store/todoReducer";
+import {
+  StyleSheet,
+  TextInput,
+  View,
+  Text,
+  TouchableHighlight,
+  TouchableOpacity,
+} from 'react-native';
+import {useDispatch} from 'react-redux';
+import {removeTodo} from '@/store/todoReducer';
+import {Todo} from '@/interfaces';
+import {colors} from '@/styles';
+import {dateFormat} from '@/helpers';
+import {ReactNativeModal} from 'react-native-modal';
+import ConfirmModal from '@/components/modals/ConfirmModal';
 
-type Props = {
-  id?: string;
-  title?: string;
-  description?: string;
-  date?: string;
-};
-
-const TodoItem: React.FC<Props> = ({
-  id,
-  title,
-  description,
-  date,
-}) => {
+const TodoItem: React.FC<Todo> = ({id, title, description, date}) => {
   const dispatch = useDispatch();
+  const [isDelete, setIsDelete] = useState(false);
   const handleRemoveTodo = () => {
     dispatch(removeTodo({id}));
   };
+  const handleEditTodo = () => {};
   return (
     <View style={s.wrapper}>
+      <ReactNativeModal isVisible={isDelete}>
+        <ConfirmModal
+          confirm={handleRemoveTodo}
+          cancel={setIsDelete.bind(null, false)}
+        />
+      </ReactNativeModal>
       <Text style={s.title}>{title}</Text>
       <Text style={s.description}>{description}</Text>
       <View style={s.footer}>
         <View style={s.footerNav}>
-          <View>
-            <Text>Edit</Text>
-          </View>
-          <TouchableHighlight onPress={handleRemoveTodo.bind(null)}><Text>Delete</Text></TouchableHighlight>
+          <TouchableOpacity onPress={handleEditTodo.bind(null)}>
+            <Text style={s.btn}>Edit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={setIsDelete.bind(null, true)}>
+            <Text style={s.btn}>Delete</Text>
+          </TouchableOpacity>
         </View>
-        <Text>{date}</Text>
+        <Text style={s.date}>
+          {new Date(date).toLocaleString(undefined, dateFormat)}
+        </Text>
       </View>
     </View>
   );
@@ -39,19 +51,23 @@ const TodoItem: React.FC<Props> = ({
 
 const s = StyleSheet.create({
   wrapper: {
-    paddingBottom: 12,
+    padding: 12,
     borderWidth: 1,
     borderRadius: 4,
-    borderColor: '#ccc',
+    borderColor: colors.main,
     width: '100%',
-    marginBottom: 4,
-    padding: 4,
+    marginBottom: 16,
   },
   title: {
-
+    fontSize: 22,
+    fontWeight: '700',
+    color: colors.text,
+    marginBottom: 4,
   },
   description: {
-
+    fontSize: 18,
+    color: colors.text,
+    marginBottom: 16,
   },
   footer: {
     flexDirection: 'row',
@@ -60,7 +76,15 @@ const s = StyleSheet.create({
   footerNav: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: 80,
+    width: 100,
+  },
+  btn: {
+    fontSize: 16,
+    color: colors.text,
+  },
+  date: {
+    fontSize: 16,
+    color: colors.text,
   },
 });
 

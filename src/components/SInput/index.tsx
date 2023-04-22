@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {StyleSheet, TextInput, View, Text} from 'react-native';
+import { colors } from "@/styles";
 
 type Props = {
   value?: string;
@@ -33,12 +34,14 @@ const SInput: React.FC<Props> = ({
         onChangeText={t => setValue(t)}
         maxLength={maxLength}
         placeholder={placeholder}
+        cursorColor={colors.secondary}
+        selectionColor={colors.secondary}
         {...props}
       />
       {maxLength ? (
-        <View style={s.counter}>
-          <Text>{error}</Text>
-          <Text>{`${value?.length}/${maxLength}`}</Text>
+        <View style={s.footer}>
+          <Text style={s.error}>{error}</Text>
+          <Text style={s.counter}>{`${value?.length}/${maxLength}`}</Text>
         </View>
       ) : null}
     </View>
@@ -48,22 +51,35 @@ const SInput: React.FC<Props> = ({
 const s = StyleSheet.create({
   wrapper: {
     paddingBottom: 12,
+    maxWidth: 320,
+    width: '100%',
+    alignSelf: 'center',
   },
   input: {
     width: '100%',
-    height: 50,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: '#000',
+    height: 54,
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: colors.main,
     paddingHorizontal: 14,
+    fontSize: 16,
+    color: colors.text,
   },
   label: {
     marginBottom: 2,
+    color: colors.text,
   },
-  counter: {
+  footer: {
     marginTop: 2,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    color: colors.text,
+  },
+  error: {
+
+  },
+  counter: {
+    color: colors.text,
   },
 });
 

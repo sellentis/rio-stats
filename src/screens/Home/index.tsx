@@ -4,6 +4,7 @@ import SInput from '@/components/SInput';
 import SButton from '@/components/SButton';
 import {useDispatch, useSelector} from 'react-redux';
 import { addTodo, clearTodos } from "@/store/todoReducer";
+import { colors } from "@/styles";
 
 type Props = {
   navigation: any;
@@ -27,7 +28,7 @@ const Home: React.FC<Props> = ({navigation}) => {
       Alert.alert('Description must be at least 4 characters length');
       return;
     }
-    dispatch(addTodo({id: Date.now(), date: '123', title, description}));
+    dispatch(addTodo({id: Date.now(), date: Date.now(), title, description}));
     setTitle('');
     setDescription('');
   };
@@ -67,6 +68,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: Dimensions.get('window').height,
+    backgroundColor: colors.mainBg,
   },
   text: {
     fontFamily: 'OpenSans-Bold',
