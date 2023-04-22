@@ -10,10 +10,10 @@ import {
   REGISTER,
 } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import userReducer from './userReducer';
+import todoReducer from './todoReducer';
 
 const rootReducer = combineReducers({
-  users: userReducer,
+  todos: todoReducer,
 });
 
 const persistConfig = {

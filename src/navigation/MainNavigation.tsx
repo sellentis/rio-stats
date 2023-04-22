@@ -3,6 +3,7 @@ import Home from '../screens/Home';
 import UserInfo from '../screens/UserInfo';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import UserList from '../screens/UserList';
+import TodosList from '@/screens/TodosList';
 
 const Stack = createNativeStackNavigator();
 
@@ -12,6 +13,7 @@ const MainNavigation = () => {
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="UserList" component={UserList} />
       <Stack.Screen name="UserInfo" component={UserInfo} />
+      <Stack.Screen name="TodosList" component={TodosList} />
     </Stack.Navigator>
   );
 };

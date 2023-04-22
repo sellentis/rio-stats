@@ -1,66 +1,61 @@
 import React, {useState} from 'react';
-import {
-  Button,
-  Dimensions,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import {Dropdown} from 'react-native-element-dropdown';
+import { Alert, Button, Dimensions, SafeAreaView, StyleSheet, View } from "react-native";
 import SInput from '@/components/SInput';
 import SButton from '@/components/SButton';
+import {useDispatch, useSelector} from 'react-redux';
+import { addTodo, clearTodos } from "@/store/todoReducer";
 
 type Props = {
   navigation: any;
 };
+interface RootState {
+  todos: any;
+}
 
 const Home: React.FC<Props> = ({navigation}) => {
-  const data = [
-    {label: 'Item 1', value: '1'},
-    {label: 'Item 2', value: '2'},
-    {label: 'Item 3', value: '3'},
-    {label: 'Item 4', value: '4'},
-    {label: 'Item 5', value: '5'},
-    {label: 'Item 6', value: '6'},
-    {label: 'Item 7', value: '7'},
-    {label: 'Item 8', value: '8'},
-  ];
-  const [value, setValue] = useState(null);
-  const [isFocus, setIsFocus] = useState(false);
-
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const dispatch = useDispatch();
+  const todos = useSelector((state: RootState) => state.todos);
+  console.log(todos);
+  const handleSubmit = () => {
+    if (title.length < 4) {
+      Alert.alert('Title must be at least 4 characters length');
+      return;
+    }
+    if (description.length < 8) {
+      Alert.alert('Description must be at least 4 characters length');
+      return;
+    }
+    dispatch(addTodo({id: Date.now(), date: '123', title, description}));
+    setTitle('');
+    setDescription('');
+  };
   return (
     <SafeAreaView>
       <View style={[styles.container]}>
         <View style={[styles.formContainer]}>
-          <SInput />
-          <Dropdown
-            style={[styles.dropdown, isFocus && {borderColor: 'blue'}]}
-            placeholderStyle={styles.placeholderStyle}
-            selectedTextStyle={styles.selectedTextStyle}
-            inputSearchStyle={styles.inputSearchStyle}
-            iconStyle={styles.iconStyle}
-            data={data}
-            search
-            maxHeight={300}
-            labelField="label"
-            valueField="value"
-            placeholder={!isFocus ? 'Select item' : '...'}
-            searchPlaceholder="Search..."
-            value={value}
-            onFocus={() => setIsFocus(true)}
-            onBlur={() => setIsFocus(false)}
-            onChange={item => {
-              setValue(item.value);
-              setIsFocus(false);
-            }}
+          <SInput
+            value={title}
+            setValue={setTitle}
+            label={'Title'}
+            placeholder={'Enter todo title...'}
+            maxLength={24}
           />
-          <SButton />
+          <SInput
+            value={description}
+            setValue={setDescription}
+            label={'Description'}
+            placeholder={'Enter todo description...'}
+            maxLength={256}
+          />
+          <SButton onPress={handleSubmit} />
         </View>
-        <Text style={[styles.text]}>Home screen</Text>
         <Button
           title="Go to Details"
-          onPress={() => navigation.navigate('UserList')}
+          onPress={() => {
+            navigation.navigate('TodosList');
+          }}
         />
       </View>
     </SafeAreaView>
