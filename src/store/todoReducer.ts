@@ -1,4 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
+import {Todo} from '@/interfaces';
 
 const todoSlice = createSlice({
   name: 'todos',
@@ -16,14 +17,23 @@ const todoSlice = createSlice({
       return [];
     },
     removeTodo(state: any, action) {
-      console.log(action.payload.id);
-      return state.filter(
-        (item: {id: string}) => item.id !== action.payload.id,
-      );
+      return state.filter((item: Todo) => item.id !== action.payload.id);
+    },
+    editTodo(state: any, action) {
+      return state.map((item: Todo) => {
+        if (item.id === action.payload.id) {
+          return {
+            ...item,
+            title: action.payload.title,
+            description: action.payload.description,
+          };
+        }
+        return item;
+      });
     },
   },
 });
 
-export const {addTodo, clearTodos, removeTodo} = todoSlice.actions;
+export const {addTodo, clearTodos, removeTodo, editTodo} = todoSlice.actions;
 
 export default todoSlice.reducer;

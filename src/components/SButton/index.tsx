@@ -1,15 +1,24 @@
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
-import { colors } from "@/styles";
+import {colors} from '@/styles';
 
 type Props = {
   text?: string;
   onPress?: any;
+  customStyles?: any;
 };
 
-const SButton: React.FC<Props> = ({text = 'submit', onPress, ...props}) => {
+const SButton: React.FC<Props> = ({
+  text = 'submit',
+  onPress,
+  customStyles,
+  ...props
+}) => {
   return (
-    <TouchableOpacity style={[styles.button]} {...props} onPress={onPress}>
+    <TouchableOpacity
+      style={[styles.button, customStyles]}
+      {...props}
+      onPress={onPress}>
       <Text style={[styles.text]}>{text}</Text>
     </TouchableOpacity>
   );

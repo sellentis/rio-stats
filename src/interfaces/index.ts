@@ -1,5 +1,5 @@
 export type Todo = {
-  id: string;
+  id: string | number;
   title: string;
   description: string;
   date: string | number | Date;
@@ -8,6 +8,13 @@ export type Todo = {
 export type IConfirmModal = {
   confirm?: any;
   cancel?: any;
+};
+export type IEditTodoModal = {
+  confirm?: any;
+  cancel?: any;
+  id: string | number;
+  title?: string;
+  description?: string;
 };
 
 export interface DateTimeFormatOptions {

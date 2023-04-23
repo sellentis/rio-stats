@@ -14,16 +14,28 @@ import {colors} from '@/styles';
 import {dateFormat} from '@/helpers';
 import {ReactNativeModal} from 'react-native-modal';
 import ConfirmModal from '@/components/modals/ConfirmModal';
+import EditTodoModal from '@/components/modals/EditTodoModal';
 
 const TodoItem: React.FC<Todo> = ({id, title, description, date}) => {
   const dispatch = useDispatch();
   const [isDelete, setIsDelete] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
   const handleRemoveTodo = () => {
     dispatch(removeTodo({id}));
   };
-  const handleEditTodo = () => {};
+  const handleEditTodo = () => {
+    setIsEdit(true);
+  };
   return (
     <View style={s.wrapper}>
+      <ReactNativeModal isVisible={isEdit}>
+        <EditTodoModal
+          id={id}
+          title={title}
+          description={description}
+          cancel={setIsEdit.bind(null, false)}
+        />
+      </ReactNativeModal>
       <ReactNativeModal isVisible={isDelete}>
         <ConfirmModal
           confirm={handleRemoveTodo}
