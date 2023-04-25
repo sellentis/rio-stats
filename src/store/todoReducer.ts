@@ -9,6 +9,7 @@ const todoSlice = createSlice({
       state.push({
         id: action.payload.id,
         date: action.payload.date,
+        dateString: action.payload.dateString,
         title: action.payload.title,
         description: action.payload.description,
       });

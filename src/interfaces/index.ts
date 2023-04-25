@@ -3,6 +3,7 @@ export type Todo = {
   title: string;
   description: string;
   date: string | number | Date;
+  dateString?: string;
 };
 
 export type IConfirmModal = {

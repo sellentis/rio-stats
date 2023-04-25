@@ -1,7 +1,8 @@
 export const colors = {
-  main: '#9222FE',
-  mainBg: '#474154',
-  secondary: '#FE8354',
-  text: '#FFFFFF',
+  main: '#1abe9b',
+  mainBg: '#fff',
+  secondary: '#7f5a83',
+  text: '#2f2828',
   secondaryText: '#6E6975',
+  error: '#ce0505',
 };

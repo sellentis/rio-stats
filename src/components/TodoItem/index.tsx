@@ -1,11 +1,10 @@
 import React, {useState} from 'react';
 import {
   StyleSheet,
-  TextInput,
   View,
   Text,
-  TouchableHighlight,
   TouchableOpacity,
+  Animated,
 } from 'react-native';
 import {useDispatch} from 'react-redux';
 import {removeTodo} from '@/store/todoReducer';
@@ -15,6 +14,7 @@ import {dateFormat} from '@/helpers';
 import {ReactNativeModal} from 'react-native-modal';
 import ConfirmModal from '@/components/modals/ConfirmModal';
 import EditTodoModal from '@/components/modals/EditTodoModal';
+import {RectButton, Swipeable} from 'react-native-gesture-handler';
 
 const TodoItem: React.FC<Todo> = ({id, title, description, date}) => {
   const dispatch = useDispatch();
@@ -26,49 +26,88 @@ const TodoItem: React.FC<Todo> = ({id, title, description, date}) => {
   const handleEditTodo = () => {
     setIsEdit(true);
   };
+  const renderLeftActions = (progress, dragX) => {
+    const trans = dragX.interpolate({
+      inputRange: [0, 50, 100, 101],
+      outputRange: [-20, 0, 0, 1],
+    });
+    return (
+      <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={handleEditTodo}
+        style={[s.backBtn, s.backBtnEdit]}>
+        <Animated.Text
+          style={[
+            s.backBtnText,
+            // {
+            //   transform: [{translateX: trans}],
+            // },
+          ]}>
+          Edit
+        </Animated.Text>
+      </TouchableOpacity>
+    );
+  };
+  const renderRightActions = (progress, dragX) => {
+    const trans = dragX.interpolate({
+      inputRange: [0, 50, 100, 101],
+      outputRange: [0, 0, 0, 1],
+    });
+    return (
+      <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={setIsDelete.bind(null, true)}
+        style={[s.backBtn, s.backBtnDelete]}>
+        <Animated.Text
+          style={[
+            s.backBtnText,
+            // {
+            //   transform: [{translateX: trans}],
+            // },
+          ]}>
+          Delete
+        </Animated.Text>
+      </TouchableOpacity>
+    );
+  };
   return (
-    <View style={s.wrapper}>
-      <ReactNativeModal isVisible={isEdit}>
-        <EditTodoModal
-          id={id}
-          title={title}
-          description={description}
-          cancel={setIsEdit.bind(null, false)}
-        />
-      </ReactNativeModal>
-      <ReactNativeModal isVisible={isDelete}>
-        <ConfirmModal
-          confirm={handleRemoveTodo}
-          cancel={setIsDelete.bind(null, false)}
-        />
-      </ReactNativeModal>
-      <Text style={s.title}>{title}</Text>
-      <Text style={s.description}>{description}</Text>
-      <View style={s.footer}>
-        <View style={s.footerNav}>
-          <TouchableOpacity onPress={handleEditTodo.bind(null)}>
-            <Text style={s.btn}>Edit</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={setIsDelete.bind(null, true)}>
-            <Text style={s.btn}>Delete</Text>
-          </TouchableOpacity>
+    <Swipeable
+      overshootLeft={false}
+      overshootRight={false}
+      renderLeftActions={renderLeftActions}
+      renderRightActions={renderRightActions}>
+      <View style={s.wrapper}>
+        <ReactNativeModal isVisible={isEdit}>
+          <EditTodoModal
+            id={id}
+            title={title}
+            description={description}
+            cancel={setIsEdit.bind(null, false)}
+          />
+        </ReactNativeModal>
+        <ReactNativeModal isVisible={isDelete}>
+          <ConfirmModal
+            confirm={handleRemoveTodo}
+            cancel={setIsDelete.bind(null, false)}
+          />
+        </ReactNativeModal>
+        <Text style={s.title}>{title}</Text>
+        <Text style={s.description}>{description}</Text>
+        <View style={s.footer}>
+          <Text style={s.date}>
+            {new Date(date).toLocaleString(undefined, dateFormat)}
+          </Text>
         </View>
-        <Text style={s.date}>
-          {new Date(date).toLocaleString(undefined, dateFormat)}
-        </Text>
       </View>
-    </View>
+    </Swipeable>
   );
 };
 
 const s = StyleSheet.create({
   wrapper: {
     padding: 12,
-    borderWidth: 1,
-    borderRadius: 4,
-    borderColor: colors.main,
     width: '100%',
-    marginBottom: 16,
+    backgroundColor: '#fff',
   },
   title: {
     fontSize: 22,
@@ -85,14 +124,25 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  footerNav: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: 100,
-  },
   btn: {
     fontSize: 16,
     color: colors.text,
+  },
+  backBtn: {
+    height: '100%',
+    width: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backBtnDelete: {
+    backgroundColor: colors.error,
+  },
+  backBtnEdit: {
+    backgroundColor: colors.main,
+  },
+  backBtnText: {
+    fontWeight: '900',
+    color: '#fff',
   },
   date: {
     fontSize: 16,

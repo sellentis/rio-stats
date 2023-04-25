@@ -1,10 +1,17 @@
 import React, {useState} from 'react';
-import { Alert, Button, Dimensions, SafeAreaView, StyleSheet, View } from "react-native";
-import SInput from '@/components/SInput';
-import SButton from '@/components/SButton';
-import {useDispatch, useSelector} from 'react-redux';
-import { addTodo, clearTodos } from "@/store/todoReducer";
-import { colors } from "@/styles";
+import {
+  Alert,
+  Button,
+  Dimensions,
+  SafeAreaView,
+  StyleSheet,
+  View,
+} from 'react-native';
+import {colors} from '@/styles';
+import {Calendar} from 'react-native-calendars/src';
+import SButton from "@/components/SButton";
+import { useSelector } from "react-redux";
+import { Todo } from "@/interfaces";
 
 type Props = {
   navigation: any;
@@ -14,50 +21,38 @@ interface RootState {
 }
 
 const Home: React.FC<Props> = ({navigation}) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const dispatch = useDispatch();
   const todos = useSelector((state: RootState) => state.todos);
-  console.log(todos);
-  const handleSubmit = () => {
-    if (title.length < 4) {
-      Alert.alert('Title must be at least 4 characters length');
-      return;
-    }
-    if (description.length < 8) {
-      Alert.alert('Description must be at least 4 characters length');
-      return;
-    }
-    dispatch(addTodo({id: Date.now(), date: Date.now(), title, description}));
-    setTitle('');
-    setDescription('');
+  let formattedDates = {};
+  todos.forEach(todo => {
+    formattedDates[todo.dateString] = {selected: true}
+  });
+  console.log(formattedDates);
+  const handlePickDay = (dateString, timestamp) => {
+    navigation.navigate('DayInfo', {data: {dateString, timestamp}});
   };
   return (
     <SafeAreaView>
       <View style={[styles.container]}>
         <View style={[styles.formContainer]}>
-          <SInput
-            value={title}
-            setValue={setTitle}
-            label={'Title'}
-            placeholder={'Enter todo title...'}
-            maxLength={24}
+          <Calendar
+            onDayPress={day => {
+              handlePickDay(day.dateString, day.timestamp);
+            }}
+            theme={{
+              selectedDayBackgroundColor: colors.main,
+              selectedDayTextColor: '#ffffff',
+              todayTextColor: colors.main,
+            }}
+            markedDates={formattedDates}
           />
-          <SInput
-            value={description}
-            setValue={setDescription}
-            label={'Description'}
-            placeholder={'Enter todo description...'}
-            maxLength={256}
+          <SButton
+            onPress={() => {
+              navigation.navigate('TodosList');
+            }}
+            text={'View list'}
+            customStyles={styles.btn}
           />
-          <SButton onPress={handleSubmit} />
         </View>
-        <Button
-          title="Go to Details"
-          onPress={() => {
-            navigation.navigate('TodosList');
-          }}
-        />
       </View>
     </SafeAreaView>
   );
@@ -66,7 +61,7 @@ const Home: React.FC<Props> = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     minHeight: Dimensions.get('window').height,
     backgroundColor: colors.mainBg,
   },
@@ -111,6 +106,9 @@ const styles = StyleSheet.create({
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
+  },
+  btn: {
+    marginTop: 24,
   },
 });
 

@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 18,
     fontWeight: '700',
-    color: colors.text,
+    color: '#fff',
     textTransform: 'uppercase',
   },
 });
